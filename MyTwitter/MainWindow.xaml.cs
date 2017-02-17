@@ -21,5 +21,18 @@ namespace MyTwitter {
 		public MainWindow() {
 			InitializeComponent();
 		}
+
+		private void LoginMenu_Click(object sender, RoutedEventArgs e) {
+			
+		}
+		private void ExitMenu_Click(object sender, RoutedEventArgs e) {
+			Close();
+		}
+		private void TweetMenu_Click(object sender, RoutedEventArgs e) {
+			
+		}
+		private void AboutMenu_Click(object sender, RoutedEventArgs e) {
+
+		}
 	}
 }

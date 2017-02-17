@@ -5,8 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyTwitter"
         mc:Ignorable="d"
-        Title="MyTwitter" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="MyTwitter" Height="600" Width="800">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		<Menu>
+			<MenuItem Header="ファイル(_F)">
+				<MenuItem Header="ログイン(_L)..." Click="LoginMenu_Click"/>
+				<MenuItem Header="終了(_X)" Click="ExitMenu_Click"/>
+			</MenuItem>
+			<MenuItem Header="操作(_A)">
+				<MenuItem Header="ツイート(_T)..." Click="TweetMenu_Click"/>
+			</MenuItem>
+			<MenuItem Header="オプション(_O)">
+				<MenuItem IsCheckable="True" Header="自動ログイン" />
+			</MenuItem>
+			<MenuItem Header="ヘルプ(_H)">
+				<MenuItem Header="バージョン情報(_A)" Click="AboutMenu_Click"/>
+			</MenuItem>
+		</Menu>
+	</Grid>
 </Window>
