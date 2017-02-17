@@ -26,5 +26,8 @@
 				<MenuItem Header="バージョン情報(_A)" Click="AboutMenu_Click"/>
 			</MenuItem>
 		</Menu>
+		<ListBox x:Name="listBox" HorizontalAlignment="Left" Height="488" Grid.Row="1" VerticalAlignment="Top" Width="200" Margin="10,53,0,0"/>
+		<TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="1" Text="タイムライン" VerticalAlignment="Top" FontSize="24" Width="200" TextAlignment="Center"/>
 	</Grid>
+
 </Window>
