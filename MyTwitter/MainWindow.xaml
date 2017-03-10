@@ -6,6 +6,11 @@
         xmlns:local="clr-namespace:MyTwitter"
         mc:Ignorable="d"
         Title="MyTwitter" Height="600" Width="800">
+	<Window.Resources>
+		<ContextMenu x:Key="TweetMenu">
+			<MenuItem Name="CopyTweetUrlMenu" Header="URLをコピー" Click="CopyTweetUrlMenu_Click" />
+		</ContextMenu>
+	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -26,8 +31,41 @@
 				<MenuItem Header="バージョン情報(_A)" Click="AboutMenu_Click"/>
 			</MenuItem>
 		</Menu>
-		<ListBox x:Name="listBox" HorizontalAlignment="Left" Height="488" Grid.Row="1" VerticalAlignment="Top" Width="200" Margin="10,53,0,0"/>
-		<TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="1" Text="タイムライン" VerticalAlignment="Top" FontSize="24" Width="200" TextAlignment="Center"/>
+		<StackPanel Orientation="Horizontal" Grid.Row="1">
+			<Grid Grid.Row="1" Width="250" Margin="10,10,10,10">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0" Name="TweetListTextBlock1" Margin="0,0,0,5" Text="タイムライン" FontSize="25" HorizontalAlignment="Center" />
+				<ListBox Grid.Row="1" Name="TweetListBox1" HorizontalAlignment="Center" Margin="10,5,10,0" Width="230" Height="480" ItemsSource="{Binding}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel ContextMenu="{DynamicResource TweetMenu}">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="{Binding User.ProfileImageUrl}" Width="50" Height="50" Stretch="Uniform"/>
+									<StackPanel>
+										<TextBlock Text="{Binding User.Name}" />
+										<StackPanel Orientation="Horizontal">
+											<TextBlock Text="@" />
+											<TextBlock Text="{Binding User.ScreenName}" />
+										</StackPanel>
+									</StackPanel>
+								</StackPanel>
+								<TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="{Binding RetweetCount}" />
+									<TextBlock Text=" RT " />
+									<TextBlock Text="{Binding FavoriteCount}" />
+									<TextBlock Text=" Fav" />
+								</StackPanel>
+								<TextBlock Text="{Binding CreatedAt.DateTime}" />
+							</StackPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+		</StackPanel>
 	</Grid>
 
 </Window>
