@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CoreTweet;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace MyTwitter {
 	/// <summary>
@@ -21,11 +22,11 @@ namespace MyTwitter {
 	/// </summary>
 	public partial class MainWindow : Window {
 		Tokens tokens = null;
-		ObservableCollection<Status> homeTweets;
+		List<string> twitterList = null;
 		// コンストラクタ
 		public MainWindow() {
 			InitializeComponent();
-			homeTweets = new ObservableCollection<Status>();
+			this.DataContext = new MainWindowDC();
 		}
 
 		// メニュー操作
@@ -43,6 +44,8 @@ namespace MyTwitter {
 			}
 			// タイムラインを読み込む
 			RedrawTimeline();
+			// ログインした人のリストを取得する
+			LoadTwitterListList();
 		}
 		private void ExitMenu_Click(object sender, RoutedEventArgs e) {
 			Close();
@@ -65,11 +68,29 @@ namespace MyTwitter {
 				return;
 			// タイムラインのツイートを取得
 			var homeStatus = tokens.Statuses.HomeTimeline();
-			homeTweets.Clear();
+			var homeTweets = new ObservableCollection<Status>();
 			foreach(var tweet in homeStatus) {
 				homeTweets.Add(tweet);
 			}
-			this.DataContext = homeTweets;
+			var bindData = this.DataContext as MainWindowDC;
+			bindData.HomeTweets = homeTweets;
+		}
+		// リストを読み込んで画面に反映する
+		void RedrawTwitterList(string name) {
+			if(tokens == null)
+				return;
+			// リストのツイートを取得
+			var selectList =
+				from p in tokens.Lists.List()
+				where p.Name == name
+				select p;
+			var listStatus = tokens.Lists.Statuses(selectList.First().Id);
+			var listTweets = new ObservableCollection<Status>();
+			foreach(var tweet in listStatus) {
+				listTweets.Add(tweet);
+			}
+			var bindData = this.DataContext as MainWindowDC;
+			bindData.ListTweets = listTweets;
 		}
 
 		// 右クリックしたオブジェクトが依存するオブジェクトを検索する
@@ -83,6 +104,40 @@ namespace MyTwitter {
 			while(!(obj.GetType() == controlType))
 				obj = VisualTreeHelper.GetParent(obj);
 			return obj;
+		}
+		// Twitterのリストの一覧を取得する
+		void LoadTwitterListList() {
+			if(tokens == null)
+				return;
+			twitterList = tokens.Lists.List().Select(e => e.Name).ToList();
+			TweetListComboBox.Items.Clear();
+			foreach(var name in twitterList) {
+				TweetListComboBox.Items.Add(name);
+			}
+		}
+		// 表示するリストを切り替える
+		private void TweetListComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			if(TweetListComboBox.SelectedIndex != -1) {
+				RedrawTwitterList(twitterList[TweetListComboBox.SelectedIndex]);
+			}
+		}
+	}
+	public class MainWindowDC : INotifyPropertyChanged {
+		// タイムライン
+		ObservableCollection<Status> homeTweets;
+		public ObservableCollection<Status> HomeTweets {
+			get { return homeTweets; }
+			set { homeTweets = value; NotifyPropertyChanged("HomeTweets"); }
+		}
+		// リスト
+		ObservableCollection<Status> listTweets;
+		public ObservableCollection<Status> ListTweets {
+			get { return listTweets; }
+			set { listTweets = value; NotifyPropertyChanged("ListTweets"); }
+		}
+		public event PropertyChangedEventHandler PropertyChanged = (s, e) => { };
+		public void NotifyPropertyChanged(string parameter) {
+			PropertyChanged(this, new PropertyChangedEventArgs(parameter));
 		}
 	}
 }
