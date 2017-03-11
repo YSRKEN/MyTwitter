@@ -52,6 +52,13 @@ namespace MyTwitter {
 		}
 		private void TweetMenu_Click(object sender, RoutedEventArgs e) {
 		}
+		private void SearchTweetMenu_Click(object sender, RoutedEventArgs e) {
+			if(SearchTweetTextBox.Text.Length == 0)
+				return;
+			if(tokens == null)
+				return;
+			
+		}
 		private void AboutMenu_Click(object sender, RoutedEventArgs e) {
 		}
 		private void CopyTweetUrlMenu_Click(object sender, RoutedEventArgs e) {
@@ -67,30 +74,38 @@ namespace MyTwitter {
 			if(tokens == null)
 				return;
 			// タイムラインのツイートを取得
-			var homeStatus = tokens.Statuses.HomeTimeline();
-			var homeTweets = new ObservableCollection<Status>();
-			foreach(var tweet in homeStatus) {
-				homeTweets.Add(tweet);
+			try {
+				var homeStatus = tokens.Statuses.HomeTimeline();
+				var homeTweets = new ObservableCollection<Status>();
+				foreach(var tweet in homeStatus) {
+					homeTweets.Add(tweet);
+				}
+				var bindData = this.DataContext as MainWindowDC;
+				bindData.HomeTweets = homeTweets;
+			} catch {
+				MessageBox.Show("タイムラインを取得できませんでした。", "MyTwitter");
 			}
-			var bindData = this.DataContext as MainWindowDC;
-			bindData.HomeTweets = homeTweets;
 		}
 		// リストを読み込んで画面に反映する
 		void RedrawTwitterList(string name) {
 			if(tokens == null)
 				return;
-			// リストのツイートを取得
-			var selectList =
-				from p in tokens.Lists.List()
-				where p.Name == name
-				select p;
-			var listStatus = tokens.Lists.Statuses(selectList.First().Id);
-			var listTweets = new ObservableCollection<Status>();
-			foreach(var tweet in listStatus) {
-				listTweets.Add(tweet);
+			try {
+				// リストのツイートを取得
+				var selectList =
+					from p in tokens.Lists.List()
+					where p.Name == name
+					select p;
+				var listStatus = tokens.Lists.Statuses(selectList.First().Id);
+				var listTweets = new ObservableCollection<Status>();
+				foreach(var tweet in listStatus) {
+					listTweets.Add(tweet);
+				}
+				var bindData = this.DataContext as MainWindowDC;
+				bindData.ListTweets = listTweets;
+			}catch {
+				MessageBox.Show("リストのツイートを取得できませんでした。", "MyTwitter");
 			}
-			var bindData = this.DataContext as MainWindowDC;
-			bindData.ListTweets = listTweets;
 		}
 
 		// 右クリックしたオブジェクトが依存するオブジェクトを検索する
@@ -109,10 +124,14 @@ namespace MyTwitter {
 		void LoadTwitterListList() {
 			if(tokens == null)
 				return;
-			twitterList = tokens.Lists.List().Select(e => e.Name).ToList();
-			TweetListComboBox.Items.Clear();
-			foreach(var name in twitterList) {
-				TweetListComboBox.Items.Add(name);
+			try {
+				twitterList = tokens.Lists.List().Select(e => e.Name).ToList();
+				TweetListComboBox.Items.Clear();
+				foreach(var name in twitterList) {
+					TweetListComboBox.Items.Add(name);
+				}
+			}catch {
+				MessageBox.Show("ログインユーザーのリストを取得できませんでした。", "MyTwitter");
 			}
 		}
 		// 表示するリストを切り替える
