@@ -23,6 +23,7 @@ namespace MyTwitter {
 	public partial class MainWindow : Window {
 		Tokens tokens = null;
 		List<string> twitterList = null;
+		TweetWindow tw = null;
 		// コンストラクタ
 		public MainWindow() {
 			InitializeComponent();
@@ -51,13 +52,29 @@ namespace MyTwitter {
 			Close();
 		}
 		private void TweetMenu_Click(object sender, RoutedEventArgs e) {
+			if(tw != null)
+				return;
+			tw = new TweetWindow();
+			tw.Show();
 		}
 		private void SearchTweetMenu_Click(object sender, RoutedEventArgs e) {
 			if(SearchTweetTextBox.Text.Length == 0)
 				return;
 			if(tokens == null)
 				return;
-			
+			// ツイート検索
+			try {
+				var searchStatus = tokens.Search.Tweets(q => SearchTweetTextBox.Text);
+				var searchTweets = new ObservableCollection<Status>();
+				foreach(var tweet in searchStatus) {
+					searchTweets.Add(tweet);
+				}
+				var bindData = this.DataContext as MainWindowDC;
+				bindData.SearchTweets = searchTweets;
+				SearchTweetListBox.Visibility = Visibility.Visible;
+			} catch {
+				MessageBox.Show("検索結果を取得できませんでした。", "MyTwitter");
+			}
 		}
 		private void AboutMenu_Click(object sender, RoutedEventArgs e) {
 		}
@@ -82,6 +99,7 @@ namespace MyTwitter {
 				}
 				var bindData = this.DataContext as MainWindowDC;
 				bindData.HomeTweets = homeTweets;
+				TweetTimeLineListBox.Visibility = Visibility.Visible;
 			} catch {
 				MessageBox.Show("タイムラインを取得できませんでした。", "MyTwitter");
 			}
@@ -103,7 +121,8 @@ namespace MyTwitter {
 				}
 				var bindData = this.DataContext as MainWindowDC;
 				bindData.ListTweets = listTweets;
-			}catch {
+				TweetListListBox.Visibility = Visibility.Visible;
+			} catch {
 				MessageBox.Show("リストのツイートを取得できませんでした。", "MyTwitter");
 			}
 		}
@@ -153,6 +172,12 @@ namespace MyTwitter {
 		public ObservableCollection<Status> ListTweets {
 			get { return listTweets; }
 			set { listTweets = value; NotifyPropertyChanged("ListTweets"); }
+		}
+		// 検索結果
+		ObservableCollection<Status> searchTweets;
+		public ObservableCollection<Status> SearchTweets {
+			get { return searchTweets; }
+			set { searchTweets = value; NotifyPropertyChanged("SearchTweets"); }
 		}
 		public event PropertyChangedEventHandler PropertyChanged = (s, e) => { };
 		public void NotifyPropertyChanged(string parameter) {

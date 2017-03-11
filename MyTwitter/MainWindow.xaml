@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyTwitter"
         mc:Ignorable="d"
-        Title="MyTwitter" Height="600" Width="800">
+        Title="MyTwitter" Height="600" Width="800" ResizeMode="NoResize">
 	<Window.Resources>
 		<ContextMenu x:Key="TweetMenu">
 			<MenuItem Name="CopyTweetUrlMenu" Header="URLをコピー" Click="CopyTweetUrlMenu_Click" />
@@ -16,14 +16,14 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition />
 		</Grid.RowDefinitions>
-		<Menu>
+		<Menu Grid.Row="0">
 			<MenuItem Header="ファイル(_F)">
 				<MenuItem Header="ログイン(_L)..." Click="LoginMenu_Click"/>
 				<MenuItem Header="終了(_X)" Click="ExitMenu_Click"/>
 			</MenuItem>
 			<MenuItem Header="操作(_A)">
 				<MenuItem Header="ツイート(_T)..." Click="TweetMenu_Click"/>
-				<MenuItem Header="Twitter検索(_S)..." Click="SearchTweetMenu_Click"/>
+				<MenuItem Header="Twitter検索(_S)" Click="SearchTweetMenu_Click"/>
 			</MenuItem>
 			<MenuItem Header="オプション(_O)">
 				<MenuItem IsCheckable="True" Header="自動ログイン" />
@@ -32,14 +32,19 @@
 				<MenuItem Header="バージョン情報(_A)" Click="AboutMenu_Click"/>
 			</MenuItem>
 		</Menu>
-		<StackPanel Orientation="Horizontal" Grid.Row="1">
-			<Grid Width="250" Margin="10,10,5,10">
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="1*"/>
+				<ColumnDefinition Width="1*"/>
+				<ColumnDefinition Width="1*"/>
+			</Grid.ColumnDefinitions>
+			<Grid Grid.Column="0" Margin="0,10,0,10">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<TextBlock Grid.Row="0" Margin="0,0,0,5" Text="タイムライン" FontSize="25" HorizontalAlignment="Center" />
-				<ListBox Grid.Row="1" Name="TweetTimeLineListBox" HorizontalAlignment="Center" Margin="0,0,0,0" Width="250" Height="485"  ItemsSource="{Binding HomeTweets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+				<ListBox Grid.Row="1" Name="TweetTimeLineListBox" HorizontalAlignment="Center" Margin="5,0,5,0" Height="485" ItemsSource="{Binding HomeTweets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Visibility="Hidden">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<StackPanel ContextMenu="{DynamicResource TweetMenu}">
@@ -66,15 +71,15 @@
 					</ListBox.ItemTemplate>
 				</ListBox>
 			</Grid>
-			<Grid Width="250" Margin="5,10,5,10">
+			<Grid Grid.Column="1" Margin="0,10,0,10">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<TextBlock Grid.Row="0" Margin="0,0,0,5" Text="リスト" FontSize="25" HorizontalAlignment="Center" />
-				<ComboBox Grid.Row="1" Name="TweetListComboBox" SelectionChanged="TweetListComboBox_SelectionChanged" Height="25" />
-				<ListBox Grid.Row="2" Name="TweetListListBox" HorizontalAlignment="Center" Margin="0,0,0,0" Width="250" Height="460" ItemsSource="{Binding ListTweets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+				<ComboBox Grid.Row="1" Name="TweetListComboBox" SelectionChanged="TweetListComboBox_SelectionChanged" Height="25" Margin="5,0,5,0"/>
+				<ListBox Grid.Row="2" Name="TweetListListBox" HorizontalAlignment="Center" Margin="4,0,4,0" Height="460" ItemsSource="{Binding ListTweets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Visibility="Hidden">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<StackPanel ContextMenu="{DynamicResource TweetMenu}">
@@ -101,14 +106,14 @@
 					</ListBox.ItemTemplate>
 				</ListBox>
 			</Grid>
-			<Grid Width="250" Margin="5,10,10,10">
+			<Grid Grid.Column="2" Margin="0,10,5,10">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<TextBlock Grid.Row="0" Margin="0,0,0,5" Text="検索結果" FontSize="25" HorizontalAlignment="Center" />
-				<Grid Grid.Row="1" Height="25">
+				<Grid Grid.Row="1" Height="25" Margin="5,0,5,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition />
 						<ColumnDefinition Width="40" />
@@ -116,7 +121,7 @@
 					<TextBox Grid.Column="0" Name="SearchTweetTextBox" />
 					<Button Grid.Column="1" Content="検索" Click="SearchTweetMenu_Click"/>
 				</Grid>
-				<ListBox Grid.Row="2" Name="SearchTweetListBox" HorizontalAlignment="Center" Margin="0,0,0,0" Width="250" Height="460" ItemsSource="{Binding ListTweets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+				<ListBox Grid.Row="2" Name="SearchTweetListBox" HorizontalAlignment="Center" Margin="4,0,4,0" Height="460" ItemsSource="{Binding SearchTweets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Visibility="Hidden">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<StackPanel ContextMenu="{DynamicResource TweetMenu}">
@@ -143,7 +148,7 @@
 					</ListBox.ItemTemplate>
 				</ListBox>
 			</Grid>
-		</StackPanel>
+		</Grid>
 	</Grid>
 
 </Window>
