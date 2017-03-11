@@ -72,8 +72,8 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<TextBlock Grid.Row="0" Margin="0,0,0,5" Text="リスト" FontSize="25" HorizontalAlignment="Center" />
-				<ComboBox Grid.Row="1" Name="TweetListComboBox" SelectionChanged="TweetListComboBox_SelectionChanged" />
-				<ListBox Grid.Row="2" Name="TweetListListBox" HorizontalAlignment="Center" Margin="0,0,0,0" Width="250" Height="485" ItemsSource="{Binding ListTweets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+				<ComboBox Grid.Row="1" Name="TweetListComboBox" SelectionChanged="TweetListComboBox_SelectionChanged" Height="25" />
+				<ListBox Grid.Row="2" Name="TweetListListBox" HorizontalAlignment="Center" Margin="0,0,0,0" Width="250" Height="460" ItemsSource="{Binding ListTweets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<StackPanel ContextMenu="{DynamicResource TweetMenu}">
